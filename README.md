@@ -5,7 +5,7 @@
 > Gérez vos webhooks avec retry automatique, Dead Letter Queue persistante, monitoring temps réel et gestion de comptes multi-plans.
 
 👉 **Site en ligne :** https://zyqtron.github.io/webhook-ninja-site/  
-👉 **Repo privé (code source complet) :** [zyqtron/webhook-ninja](https://github.com/zyqtron/webhook-ninja)
+👉 **Code source :** disponible sur demande — zyqtron.vault@gmail.com
 
 ---
 
@@ -245,4 +245,4 @@ MIT — voir [LICENSE](LICENSE).
 ---
 
 🥷 **Propulsé par Zyqtron — Architecture Swarm Active**  
-[Site officiel](https://zyqtron.github.io/webhook-ninja-site/) • [GitHub privé](https://github.com/zyqtron/webhook-ninja)
+[Site officiel](https://zyqtron.github.io/webhook-ninja-site/) • [Contact](mailto:zyqtron.vault@gmail.com)
