@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Ninja Dashboard v2.8</title>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <h1 class="text-3xl font-bold text-cyan-400 mb-6">🥷 WebhookNinja v2.8 — Centre de Contrôle Noosphere</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Stats Globales -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4">📊 Statistiques Globales</h2>
+            <div id="global-stats" class="space-y-2">
+                <p class="text-gray-400">Chargement...</p>
+            </div>
+        </div>
+
+        <!-- DLQ Interactive -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4">☠️ Dead Letter Queue</h2>
+            <div id="dlq-list" class="space-y-2">
+                <p class="text-gray-400">Chargement...</p>
+            </div>
+        </div>
+
+        <!-- Queue Stats -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4">📋 File d\'Attente</h2>
+            <div id="queue-stats" class="space-y-2">
+                <p class="text-gray-400">Chargement...</p>
+            </div>
+        </div>
+
+        <!-- Derniers Échecs -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4">❌ Derniers Échecs</h2>
+            <div id="recent-failures" class="space-y-2">
+                <p class="text-gray-400">Chargement...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-8 text-center text-gray-500 text-sm">
+        Auto-refresh toutes les 30s
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const API_KEY = prompt("🔑 Clé API WebhookNinja :", "NINJA_7382_PRO");
+
+        async function api(path) {
+            const r = await fetch(API_BASE + path, {
+                headers: {"X-API-KEY": API_KEY}
+            });
+            return r.json();
+        }
+
+        async function loadStats() {
+            try {
+                const stats = await api("/stats/delivery");
+                document.getElementById("global-stats").innerHTML = `
+                    <p>📦 Total webhooks: <span class="text-cyan-300">${stats.overall?.total_webhooks || 0}</span></p>
+                    <p>📨 Envoyés: <span class="text-green-300">${stats.overall?.total_successful || 0}</span></p>
+                    <p>❌ Échecs: <span class="text-red-300">${stats.overall?.total_failed || 0}</span></p>
+                    <p>📊 Taux: <span class="text-yellow-300">${stats.overall?.delivery_rate?.toFixed(2) || 0}%</span></p>
+                    <p>☠️ DLQ: <span class="text-orange-300">${stats.overall?.dlq_size || 0}</span></p>
+                `;
+            } catch(e) {
+                document.getElementById("global-stats").innerHTML = `<p class="text-red-400">Erreur de connexion</p>`;
+            }
+        }
+
+        async function loadDLQ() {
+            try {
+                const data = await api("/dlq?limit=10");
+                const dlq = data.dead_letter_queue || [];
+                if (dlq.length === 0) {
+                    document.getElementById("dlq-list").innerHTML = `<p class="text-green-400">✅ DLQ vide</p>`;
+                    return;
+                }
+                document.getElementById("dlq-list").innerHTML = dlq.map(e => `
+                    <div class="bg-slate-700 p-3 rounded">
+                        <p class="text-sm">📌 ${e.webhook_id} — ${e.last_error}</p>
+                        <p class="text-xs text-gray-400">${e.last_timestamp} | Tentatives: ${e.attempt_number}</p>
+                        <button onclick="retryDLQ('${e.webhook_id}')" class="bg-cyan-600 px-3 py-1 rounded text-sm mt-2">🔄 Retry</button>
+                    </div>
+                `).join("");
+            } catch(e) {
+                document.getElementById("dlq-list").innerHTML = `<p class="text-red-400">Erreur de connexion</p>`;
+            }
+        }
+
+        async function retryDLQ(id) {
+            await fetch(API_BASE + "/dlq/" + id + "/retry", {
+                method: "POST",
+                headers: {"X-API-KEY": API_KEY}
+            });
+            loadDLQ();
+            loadStats();
+        }
+
+        async function loadQueue() {
+            try {
+                const stats = await api("/stats/queue");
+                document.getElementById("queue-stats").innerHTML = `
+                    <p>⏳ En attente: <span class="text-yellow-300">${stats.pending || 0}</span></p>
+                    <p>⚙️ En cours: <span class="text-blue-300">${stats.processing || 0}</span></p>
+                    <p>✅ Terminé: <span class="text-green-300">${stats.done || 0}</span></p>
+                    <p>❌ Échec: <span class="text-red-300">${stats.failed || 0}</span></p>
+                `;
+            } catch(e) {
+                document.getElementById("queue-stats").innerHTML = `<p class="text-red-400">Erreur de connexion</p>`;
+            }
+        }
+
+        async function loadFailures() {
+            try {
+                const data = await api("/stats/delivery");
+                const byWebhook = data.by_webhook || {};
+                const entries = Object.entries(byWebhook).filter(([_, w]) => w.failed > 0);
+                if (entries.length === 0) {
+                    document.getElementById("recent-failures").innerHTML = `<p class="text-green-400">✅ Aucun échec récent</p>`;
+                    return;
+                }
+                document.getElementById("recent-failures").innerHTML = entries.slice(0,5).map(([id, w]) => `
+                    <div class="bg-slate-700 p-3 rounded">
+                        <p class="text-sm">${id} — ${w.failed} échecs / ${w.total_sent} envois</p>
+                        <div class="w-full bg-slate-600 h-2 rounded mt-1">
+                            <div class="bg-red-500 h-2 rounded" style="width:${(w.failed/w.total_sent*100).toFixed(1)}%"></div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch(e) {
+                document.getElementById("recent-failures").innerHTML = `<p class="text-red-400">Erreur de connexion</p>`;
+            }
+        }
+
+        loadStats();
+        loadDLQ();
+        loadQueue();
+        loadFailures();
+        setInterval(() => { loadStats(); loadDLQ(); loadQueue(); loadFailures(); }, 30000);
+    </script>
+</body>
+</html>
