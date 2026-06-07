@@ -49,7 +49,7 @@
 
     <script>
         const API_BASE = window.location.origin;
-        const API_KEY = prompt("🔑 Clé API WebhookNinja :", "NINJA_7382_PRO");
+        const API_KEY = "NINJA_7382_PRO";
 
         async function api(path) {
             const r = await fetch(API_BASE + path, {
@@ -144,5 +144,52 @@
         loadFailures();
         setInterval(() => { loadStats(); loadDLQ(); loadQueue(); loadFailures(); }, 30000);
     </script>
+
+<script>
+// Dashboard API Connector v3.1
+const API_BASE = window.location.hostname === 'localhost' 
+  ? 'http://127.0.0.1:8000' 
+  : 'https://webhookninja.zyqtron.fr';
+const API_KEY = localStorage.getItem('whn_api_key') || '';
+
+async function fetchAPI(path) {
+  try {
+    const resp = await fetch(API_BASE + path, { headers: { 'X-API-KEY': API_KEY } });
+    if (resp.ok) return await resp.json();
+  } catch(e) {}
+  return null;
+}
+
+async function refreshDashboard() {
+  const stats = await fetchAPI('/stats/delivery');
+  const queue = await fetchAPI('/stats/queue');
+  const dlq = await fetchAPI('/dlq?limit=5');
+  
+  if (stats) {
+    document.getElementById('api-total').textContent = stats.total_sent || 0;
+    document.getElementById('api-rate').textContent = (stats.delivery_rate || 100) + '%';
+    document.getElementById('api-dlq').textContent = stats.dlq_size || 0;
+    document.getElementById('api-status').textContent = 'Connecte';
+    document.getElementById('api-status').className = 'text-green-400';
+  } else {
+    document.getElementById('api-status').textContent = 'Hors ligne';
+    document.getElementById('api-status').className = 'text-yellow-400';
+  }
+}
+
+function setApiKey() {
+  const key = prompt('Entrez votre cle API WebhookNinja:');
+  if (key) {
+    localStorage.setItem('whn_api_key', key);
+    refreshDashboard();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (API_KEY) refreshDashboard();
+  // Auto-refresh every 30s
+  setInterval(refreshDashboard, 30000);
+});
+</script>
 </body>
 </html>
