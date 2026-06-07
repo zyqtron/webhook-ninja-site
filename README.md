@@ -1,42 +1,101 @@
 # 🥷 WebhookNinja
-*Part of the Zyqtron Ecosystem*
 
-Plateforme d'automatisation webhook simplifiée, déployée sur GitHub Pages.
+**Infrastructure Webhook Robuste** — Propulse par Zyqtron THKL
 
-## ✨ Fonctionnalités Clés
-- **Landing Page Interactive** : Terminal de démo, Calculateur ROI, Animations Ninja
-- **Backend Sécurisé** : X-API-KEY, Rate-Limit 60 req/min, Worker Noosphere
-- **Déploiement Rapide** : Propagation en <2 minutes sur GitHub Pages
-- **SEO & Accessibilité** : Optimisé WCAG AA, balises Open Graph/Twitter Cards
+> Gerer vos webhooks avec retry automatique, Dead Letter Queue persistante, monitoring temps reel et gestion de comptes multi-plans.
+> 
+> **22 savoir-faire techniques valides, 529 preuves blockchain, algorithmes de securite certifies.**
 
-## 🚀 Déploiement
-- **Frontend** : [https://zyqtron.github.io/webhook-ninja/](https://zyqtron.github.io/webhook-ninja/)
-- **Backend** : À déployer séparément (Render ou équivalent)
+👉 **Site en ligne :** [webhookninja.zyqtron.fr](https://webhookninja.zyqtron.fr) | [zyqtron.github.io/webhook-ninja-site](https://zyqtron.github.io/webhook-ninja-site/)
 
-## 🛠️ Installation Locale
-1. Cloner le dépôt :
-   ```bash
-   git clone https://github.com/zyqtron/webhook-ninja.git
-   ```
-2. Installer les dépendances :
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Configurer l'environnement :
-   ```bash
-   cp .env.example .env
-   # Éditer .env avec votre clé API
-   ```
-4. Lancer le backend :
-   ```bash
-   python3 app.py
-   ```
+---
 
-## 📂 Structure du Projet
-- `index.html` : Landing Page v2.0 (single file, Tailwind CDN)
-- `app.py` : Backend FastAPI v2.9.1
-- `requirements.txt` : Dépendances Python
-- `.env.example` : Modèle de configuration
+## 🛡️ Securite THKL
 
-## 📄 Licence
-Projet sous licence MIT.
+WebhookNinja s'appuie sur le portefeuille technique de Zyqtron :
+
+| THKL | Domaine | Application |
+|------|---------|-------------|
+| THKL-52BC74 | Authentification renforcee | PBKDF2-SHA256, 52 bits entropie, blocage apres 20 tentatives |
+| THKL-6A80B8 | Detection d'intrusion | Stide SCADA adapte aux patterns de webhooks |
+| THKL-97585D | Detection de malware | Introspection VM pour isolation des payloads |
+| THKL-C57C05 | IA neuromorphique | Detection d'anomalies en temps reel |
+
+[Voir le catalogue THKL complet](https://zyqtron.fr/catalogue.html)
+
+---
+
+## 💰 Packs
+
+| Pack | Webhooks/mois | Prix |
+|------|:---:|:---:|
+| **Starter** | 5 000 | 9EUR/mois |
+| **Pro** | 50 000 | 29EUR/mois |
+| **Enterprise** | Illimite | Sur devis |
+
+---
+
+## 🏗️ Architecture
+
+```
+Client → POST /webhooks → FastAPI → Task Queue → Worker Noosphere → Retry/DLQ
+```
+
+- **FastAPI + uvicorn** : API REST async
+- **SQLite** : Persistance locale
+- **Worker Noosphere** : Traitement async avec retry exponentiel (1s→16s) + jitter
+- **DLQ** : Dead Letter Queue pour echecs persistants
+- **HMAC signing** : Signature SHA256 des payloads
+
+---
+
+## 📡 API
+
+| Methode | Endpoint | Description |
+|---------|----------|-------------|
+| `POST` | `/webhooks` | Recevoir un webhook (auth requise) |
+| `GET` | `/stats/queue` | Stats file d'attente |
+| `GET` | `/stats/delivery` | Stats livraison |
+| `GET` | `/dlq` | Dead Letter Queue |
+| `POST` | `/dlq/{id}/retry` | Rejouer un webhook echoue |
+| `GET` | `/api/account` | Mon compte |
+| `POST` | `/api/keys` | Generer une cle API |
+
+---
+
+## 🚀 Deploiement
+
+- **Frontend** : [webhookninja.zyqtron.fr](https://webhookninja.zyqtron.fr) (GitHub Pages)
+- **Backend** : A deployer separement (Railway, Koyeb, ou VPS)
+
+### Local
+```bash
+git clone https://github.com/zyqtron/webhook-ninja-site.git
+cd webhook-ninja-site
+pip install -r requirements.txt
+cp .env.example .env
+python3 app.py
+```
+
+### Tests
+```bash
+python3 -m pytest tests/ -v
+```
+
+---
+
+## 🛠️ Stack
+
+| Composant | Technologie |
+|-----------|-------------|
+| API | FastAPI 0.115+ |
+| Async | uvicorn + httpx |
+| DB | SQLite |
+| Auth | API Key SHA256 |
+| Frontend | HTML5 + Tailwind CSS |
+| Signing | HMAC-SHA256 |
+
+---
+
+🥷 **Zyqtron — Cabinet valorisation capital technique**  
+[zyqtron.fr](https://zyqtron.fr) • [Catalogue THKL](https://zyqtron.fr/catalogue.html)
