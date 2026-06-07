@@ -4,7 +4,9 @@
 
 > Gérez vos webhooks avec retry automatique, Dead Letter Queue persistante, monitoring temps réel et gestion de comptes multi-plans.
 
-👉 **Site en ligne :** https://zyqtron.github.io/webhook-ninja-site/  
+Propulsé par **Zyqtron THKL** — 22 savoir-faire techniques validés, 529 preuves blockchain, algorithmes de sécurité certifiés.
+
+👉 **Site en ligne :** https://webhookninja.zyqtron.fr  
 👉 **Code source :** disponible sur demande — zyqtron.vault@gmail.com
 
 ---
@@ -21,6 +23,20 @@
 - [Stack technique](#stack-technique)
 
 ---
+
+
+## 🛡️ Sécurité THKL
+
+WebhookNinja s'appuie sur le portefeuille technique de Zyqtron :
+
+| THKL | Domaine | Application |
+|------|---------|-------------|
+| THKL-52BC74 | Authentification renforcée | PBKDF2-SHA256, 52 bits entropie, blocage après 20 tentatives |
+| THKL-6A80B8 | Détection d'intrusion | Stide SCADA adapté aux patterns de webhooks |
+| THKL-97585D | Détection de malware | Introspection VM pour isolation des payloads |
+| THKL-C57C05 | IA neuromorphique | Détection d'anomalies en temps réel |
+
+[Voir le catalogue THKL complet](https://zyqtron.fr/catalogue.html) · [Preuves blockchain](https://zyqtron.fr/pacte_transparence.html)
 
 ## 🏗️ Architecture
 
@@ -184,6 +200,11 @@ Interface de contrôle temps réel accessible sur `http://localhost:8000/dashboa
 
 ---
 
+## 🌐 Domaines
+
+- **Production :** [webhookninja.zyqtron.fr](https://webhookninja.zyqtron.fr)
+- **GitHub Pages :** [zyqtron.github.io/webhook-ninja-site](https://zyqtron.github.io/webhook-ninja-site/)
+
 ## 🐳 Déploiement
 
 ### Docker
@@ -245,4 +266,4 @@ MIT — voir [LICENSE](LICENSE).
 ---
 
 🥷 **Propulsé par Zyqtron — Architecture Swarm Active**  
-[Site officiel](https://zyqtron.github.io/webhook-ninja-site/) • [Contact](mailto:zyqtron.vault@gmail.com)
+[Site officiel](https://webhookninja.zyqtron.fr) • [Contact](mailto:zyqtron.vault@gmail.com)
